@@ -6,8 +6,12 @@
   homebrew-bundle,
   ...
 }:
+let
+  # Access the user-level features from the system-level config
+  hmFeatures = config.home-manager.users.${username}.features;
+in
 {
-  # declarative installation of homebrew
+  # Declarative installation of homebrew
   nix-homebrew = {
     enable = true;
     enableRosetta = true;
@@ -19,21 +23,15 @@
       "homebrew/homebrew-bundle" = homebrew-bundle;
     };
 
-    mutableTaps = false; # declaratively manage taps
+    mutableTaps = false; # Declaratively manage taps
   };
 
   homebrew = {
     enable = true;
-    # for now, largely replaced with home-manager with recent fix
-    # just keeping apps not in nixpkgs or janky
-    casks = [
-      "alfred"
-      "alt-tab"
-    ];
-    brews = [
-      "tcl-tk@8"
-    ];
-    taps = builtins.attrNames config.nix-homebrew.taps; # align tap config with nix-homebrew
-    onActivation.cleanup = "zap"; # run `brew uninstall --zap` for all formulae not in brewfile
+    # Only use if nixpkgs is broken!
+    casks = hmFeatures.extraCasks;
+    brews = hmFeatures.extraBrews;
+    taps = builtins.attrNames config.nix-homebrew.taps; # Align tap config with nix-homebrew
+    onActivation.cleanup = "zap"; # Run `brew uninstall --zap` for all formulae not in brewfile
   };
 }

@@ -1,42 +1,56 @@
-_: {
-  enable = true;
-  enableGitIntegration = true;
+{
+  config,
+  lib,
+  ...
+}:
+let
+  cfg = config.features.kitty;
+in
+{
+  options.features.kitty.enable = lib.mkEnableOption "Enable custom Kitty configuration.";
 
-  font = {
-    name = "JetBrainsMono Nerd Font";
-    size = 14;
-  };
+  config = lib.mkIf cfg.enable {
+    programs.kitty = {
+      enable = true;
+      enableGitIntegration = true;
 
-  themeFile = "Catppuccin-Macchiato";
+      font = {
+        name = "JetBrainsMono Nerd Font";
+        size = 14;
+      };
 
-  shellIntegration = {
-    enableZshIntegration = true;
-    mode = "no-cursor";
-  };
+      themeFile = "Catppuccin-Macchiato";
 
-  keybindings = {
-    "ctrl+shift+t" = "new_tab";
-    "ctrl+shift+w" = "close_tab";
-    "ctrl+shift+f" = "search";
-    "ctrl+shift+n" = "new_window";
-    "ctrl+shift+up" = "scroll_line_up";
-    "ctrl+shift+down" = "scroll_line_down";
-    "ctrl+shift+left" = "previous_tab";
-    "ctrl+shift+right" = "next_tab";
-  };
+      shellIntegration = {
+        enableZshIntegration = true;
+        mode = "no-cursor";
+      };
 
-  actionAliases = {
-    "launch_tab" = "launch --cwd=current --type=tab";
-    "launch_window" = "launch --cwd=current --type=os-window";
-  };
+      keybindings = {
+        "ctrl+shift+t" = "new_tab";
+        "ctrl+shift+w" = "close_tab";
+        "ctrl+shift+f" = "search";
+        "ctrl+shift+n" = "new_window";
+        "ctrl+shift+up" = "scroll_line_up";
+        "ctrl+shift+down" = "scroll_line_down";
+        "ctrl+shift+left" = "previous_tab";
+        "ctrl+shift+right" = "next_tab";
+      };
 
-  settings = {
-    scrollback_lines = 10000;
-    enable_audio_bell = false;
-    update_check_interval = 0;
-    confirm_os_window_close = 1;
-    tab_bar_edge = "bottom";
-    tab_bar_style = "powerline";
-    window_border_width = 2;
+      actionAliases = {
+        "launch_tab" = "launch --cwd=current --type=tab";
+        "launch_window" = "launch --cwd=current --type=os-window";
+      };
+
+      settings = {
+        scrollback_lines = 10000;
+        enable_audio_bell = false;
+        update_check_interval = 0;
+        confirm_os_window_close = 1;
+        tab_bar_edge = "bottom";
+        tab_bar_style = "powerline";
+        window_border_width = 2;
+      };
+    };
   };
 }

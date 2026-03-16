@@ -1,16 +1,48 @@
 {
+  username,
   config,
   pkgs,
-  username,
-  nix-vscode-extensions,
+  lib,
   ...
 }:
 {
   imports = [
     ../shared
-    ../../modules/darwin/home-manager.nix
     ../../modules/darwin/homebrew.nix
   ];
+
+  home-manager.sharedModules = [
+    ../../modules/darwin/home.nix
+    { targets.darwin.linkApps.enable = false; }
+  ];
+
+  home-manager.users.${username} = {
+    home.homeDirectory = lib.mkForce "/Users/${username}";
+    features = {
+      # Shared packages
+      getStdCliPkgs = true;
+      getStdGuiPkgs = true;
+
+      # Custom packages
+      vim.enable = true;
+      tmux.enable = true;
+      zsh.enable = true;
+      kitty.enable = true;
+      vscode.enable = true;
+
+      # Darwin-specific packages
+      extraPackages = with pkgs; [
+        obsidian
+        rectangle
+        alt-tab-macos
+      ];
+
+      # Darwin-only options (Now valid!)
+      extraCasks = [
+        "alfred"
+      ];
+    };
+  };
 
   nixpkgs.hostPlatform = "aarch64-darwin";
 

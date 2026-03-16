@@ -1,6 +1,6 @@
-# ❄️ Dots
+# ❄️ Everything Everywhere All At Once Dots
 
-A modular, "semi-dendritic" Nix configuration designed for simplicity, extensibility, and ease-of-use.
+A modular, "semi-dendritic" Nix configuration designed for simplicity, extensibility, and ease-of-use that gives me everything, everywhere, all at once.
 
 ## Usage
 

@@ -10,11 +10,11 @@ let
 in
 {
   imports = [
-    ./features/kitty.nix
-    ./features/tmux.nix
-    ./features/vim.nix
-    ./features/vscode.nix
-    ./features/zsh.nix
+    ./shared/kitty.nix
+    ./shared/tmux.nix
+    ./shared/vim.nix
+    ./shared/vscode.nix
+    ./shared/zsh.nix
   ];
 
   options.features = {
@@ -28,8 +28,11 @@ in
   };
 
   config = {
-    home.username = username;
-    home.stateVersion = "25.11";
+
+    home = {
+      inherit username;
+      stateVersion = "25.11";
+    };
 
     xdg.enable = true;
 
@@ -49,7 +52,7 @@ in
         with pkgs;
         [
           nixd
-          nixfmt-rfc-style
+          nixfmt
           wget
           cowsay
         ]

@@ -11,36 +11,48 @@
     ../../modules/darwin/homebrew.nix
   ];
 
-  home-manager.sharedModules = [
-    ../../modules/darwin/home.nix
-    { targets.darwin.linkApps.enable = false; }
-  ];
+  users.users.${username} = {
+    name = username;
+    home = "/Users/${username}";
+    isHidden = false;
+  };
 
-  home-manager.users.${username} = {
-    home.homeDirectory = lib.mkForce "/Users/${username}";
-    features = {
-      # Shared packages
-      getStdCliPkgs = true;
-      getStdGuiPkgs = true;
+  home-manager = {
+    useGlobalPkgs = true;
+    useUserPackages = true;
+    extraSpecialArgs = { inherit username; };
 
-      # Custom packages
-      vim.enable = true;
-      tmux.enable = true;
-      zsh.enable = true;
-      kitty.enable = true;
-      vscode.enable = true;
+    sharedModules = [
+      ../../modules/darwin/home.nix
+      { targets.darwin.linkApps.enable = false; }
+    ];
 
-      # Darwin-specific packages
-      extraPackages = with pkgs; [
-        obsidian
-        rectangle
-        alt-tab-macos
-      ];
+    users.${username} = {
+      home.homeDirectory = lib.mkForce "/Users/${username}";
+      features = {
+        # Shared packages
+        getStdCliPkgs = true;
+        getStdGuiPkgs = true;
 
-      # Darwin-only options (Now valid!)
-      extraCasks = [
-        "alfred"
-      ];
+        # Custom packages
+        vim.enable = true;
+        tmux.enable = true;
+        zsh.enable = true;
+        kitty.enable = true;
+        vscode.enable = true;
+
+        # Darwin-specific packages
+        extraPackages = with pkgs; [
+          obsidian
+          rectangle
+          alt-tab-macos
+        ];
+
+        # Darwin-only options (Now valid!)
+        extraCasks = [
+          "alfred"
+        ];
+      };
     };
   };
 

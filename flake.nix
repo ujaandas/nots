@@ -96,17 +96,17 @@
     in
     {
       # OS-specific configs
-      nixosConfigurations.${username} = nixpkgs.lib.nixosSystem {
-        specialArgs = inputs // {
-          inherit username;
-          isCli = true;
-        };
-        modules = [
-          ./hosts/wsl
-          wsl.nixosModules.default
-          home-manager.nixosModules.home-manager
-        ];
-      };
+      # nixosConfigurations.${username} = nixpkgs.lib.nixosSystem {
+      #   specialArgs = inputs // {
+      #     inherit username;
+      #     isCli = true;
+      #   };
+      #   modules = [
+      #     ./hosts/wsl
+      #     wsl.nixosModules.default
+      #     home-manager.nixosModules.home-manager
+      #   ];
+      # };
 
       darwinConfigurations.${username} = darwin.lib.darwinSystem {
         specialArgs = inputs // {

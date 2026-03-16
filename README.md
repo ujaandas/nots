@@ -1,15 +1,49 @@
-### First Time Run
+# ❄️ Dots
 
-`sudo nix run --extra-experimental-features nix-command --extra-experimental-features flakes nix-darwin/master#darwin-rebuild -- switch --flake .#ooj`
+A modular, "semi-dendritic" Nix configuration designed for simplicity, extensibility, and ease-of-use.
 
-Give Nix full disk access
+## Usage
 
-### Subsequent Regeneration
+Instead of hunting through nested folders to enable a tool, everything is controlled via a central `features` block. It’s designed to be write-once, toggle-anywhere.
 
-`sudo darwin-rebuild switch --flake .#ooj`
+- Every app (Kitty, Zsh, Tmux) is its own self-contained module.
+- You can enable entire suites of tools or specific configs with simple booleans or options you define.
+- Shared logic lives in `modules/shared`, while platform-specific quirks are handled in `modules/darwin` or `modules/wsl`.
 
-### Needed to Fix Perms on Mac
+To define a new machine, simply import the relevant platform module and flip the switches you need in your `host` file:
 
-sudo chown -R username:staff ~/.local
-sudo chown $USER ~/Library/Caches/com.vscodium.ShipIt/\*
-sudo xattr -dr com.apple.quarantine /Applications/Nix\ Apps/VSCodium.app
+```nix
+{ pkgs, ... }:
+{
+  imports = [
+    ../../modules/shared
+    ../../modules/darwin
+  ];
+
+  # Choose your features
+  features = {
+    # System & GUI Settings
+    getStdCliPkgs = true;
+    getStdGuiPkgs = true;
+
+    # App Modules (Custom Configs)
+    vim.enable    = true;
+    tmux.enable   = true;
+    zsh.enable    = true;
+    kitty.enable  = true;
+    vscode.enable = true;
+
+    # One-off Additions
+    extraPackages = with pkgs; [
+      obsidian
+      rectangle
+    ];
+  };
+}
+```
+
+## Installation
+
+1. Clone this repo.
+2. Define your host in the flake, copying the structure from the other ones.
+3. Using the included CLI tools, you can just hit `rebuild`.

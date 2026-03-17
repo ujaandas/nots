@@ -114,7 +114,7 @@
           isCli = false;
         };
         modules = [
-          ./hosts/darwin
+          ./hosts/macbook
           agenix.nixosModules.default
           home-manager.darwinModules.home-manager
           nix-homebrew.darwinModules.nix-homebrew

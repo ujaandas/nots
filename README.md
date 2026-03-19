@@ -1,4 +1,4 @@
-# ❄️ Everything Everywhere All At Once Dots
+# ❄️ Nix-Based Dots
 
 A modular, "semi-dendritic" Nix configuration designed for simplicity, extensibility, and ease-of-use that gives me everything, everywhere, all at once.
 

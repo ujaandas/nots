@@ -1,16 +1,20 @@
 {
   config,
   lib,
+  options,
   pkgs,
-  username,
-  nix-vscode-extensions,
+  username ? null,
+  nix-vscode-extensions ? null,
   ...
 }:
 let
-  cfg = config.features;
+  cfg = config.nots.features;
+  dotUsername = config.nots.username;
+  hasHomeManager = options ? home-manager;
 in
 {
   imports = [
+    (lib.mkAliasOptionModule [ "features" ] [ "nots" "features" ])
     ./kitty.nix
     ./tmux.nix
     ./vim.nix
@@ -18,13 +22,21 @@ in
     ./zsh.nix
   ];
 
-  options.features = {
-    getStdCliPkgs = lib.mkEnableOption "Enable standard helpful CLI packages.";
-    getStdGuiPkgs = lib.mkEnableOption "Enable standard helpful GUI packages.";
-    extraPackages = lib.mkOption {
-      type = lib.types.listOf lib.types.package;
-      default = [ ];
-      description = "Additional packages to install for this specific machine.";
+  options.nots = {
+    username = lib.mkOption {
+      type = lib.types.str;
+      default = if username != null then username else "ooj";
+      description = "Username to configure for host and Home Manager scopes.";
+    };
+
+    features = {
+      getStdCliPkgs = lib.mkEnableOption "Enable standard helpful CLI packages.";
+      getStdGuiPkgs = lib.mkEnableOption "Enable standard helpful GUI packages.";
+      extraPackages = lib.mkOption {
+        type = lib.types.listOf lib.types.package;
+        default = [ ];
+        description = "Additional packages to install for this specific machine.";
+      };
     };
   };
 
@@ -32,9 +44,7 @@ in
     # Shared nixpkgs config
     nixpkgs = {
       config.allowUnfree = true;
-      overlays = [
-        nix-vscode-extensions.overlays.default
-      ];
+      overlays = lib.optional (nix-vscode-extensions != null) nix-vscode-extensions.overlays.default;
     };
 
     # Shared nix config
@@ -61,15 +71,17 @@ in
     # Install Zsh system-wide
     programs.zsh.enable = true;
 
-    home-manager = {
+    home-manager = lib.mkIf hasHomeManager {
       useGlobalPkgs = true;
       useUserPackages = true;
-      extraSpecialArgs = { inherit username; };
+      extraSpecialArgs = {
+        username = dotUsername;
+      };
       backupFileExtension = "bak";
 
-      users.${username} = {
+      users.${dotUsername} = {
         home = {
-          inherit username;
+          username = dotUsername;
           stateVersion = "25.11";
 
           packages = lib.flatten [

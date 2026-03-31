@@ -95,6 +95,18 @@
         };
     in
     {
+      nixosModules = {
+        nots = ./modules/nixos;
+        shared = ./modules/shared;
+        default = self.nixosModules.nots;
+      };
+
+      darwinModules = {
+        nots = ./modules/darwin;
+        shared = ./modules/shared;
+        default = self.darwinModules.nots;
+      };
+
       # OS-specific configs
       nixosConfigurations.${username} = nixpkgs.lib.nixosSystem {
         specialArgs = inputs // {

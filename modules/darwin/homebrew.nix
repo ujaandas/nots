@@ -1,17 +1,17 @@
 {
   lib,
   config,
-  username,
   homebrew-core,
   homebrew-cask,
   homebrew-bundle,
   ...
 }:
 let
-  cfg = config.features;
+  cfg = config.nots.features;
+  dotUsername = config.nots.username;
 in
 {
-  options.features = {
+  options.nots.features = {
     extraCasks = lib.mkOption {
       type = lib.types.listOf lib.types.str;
       default = [ ];
@@ -29,7 +29,7 @@ in
     nix-homebrew = {
       enable = true;
       enableRosetta = true;
-      user = username;
+      user = dotUsername;
 
       taps = {
         "homebrew/homebrew-core" = homebrew-core;

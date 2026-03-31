@@ -1,7 +1,7 @@
 {
   lib,
-  username,
   pkgs,
+  config,
   ...
 }:
 {
@@ -10,20 +10,18 @@
   ];
 
   config = {
-    # WSL-specific Nix settings
+    # NixOS-specific Nix settings
     nixpkgs.hostPlatform = "x86_64-linux";
-    wsl.enable = true;
-    wsl.defaultUser = "ooj";
     system.stateVersion = "25.05";
 
     # Install git system-wide
     programs.git.enable = true;
 
     # Configure userspace
-    users.users.${username} = {
-      name = username;
+    users.users.${config.nots.username} = {
+      name = config.nots.username;
       isNormalUser = true;
-      home = "/home/${username}";
+      home = "/home/${config.nots.username}";
       shell = pkgs.zsh;
       uid = lib.mkForce 1001;
     };

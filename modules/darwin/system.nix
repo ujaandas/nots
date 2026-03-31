@@ -1,14 +1,14 @@
 {
   config,
   lib,
-  username,
   ...
 }:
 let
-  cfg = config.features;
+  cfg = config.nots.features;
+  dotUsername = config.nots.username;
 in
 {
-  options.features = {
+  options.nots.features = {
     useTouchIdSudo = lib.mkOption {
       type = lib.types.bool;
       default = true;
@@ -27,7 +27,7 @@ in
 
     # System settings
     system = {
-      primaryUser = username;
+      primaryUser = dotUsername;
       stateVersion = 6;
       configurationRevision = config.rev or config.dirtyRev or null;
 

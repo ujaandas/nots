@@ -3,11 +3,19 @@
 }:
 {
   imports = [
-    ../../modules/wsl
+    ../../modules/nixos
   ];
 
+  wsl.enable = true;
+  wsl.defaultUser = "ooj";
+
+  programs.nix-ld.enable = true;
+
+  boot.enableContainers = true;
+  virtualisation.containers.enable = true;
+
   # Choose features
-  features = {
+  nots.features = {
     # Shared packages
     getStdCliPkgs = true;
     getStdGuiPkgs = false;

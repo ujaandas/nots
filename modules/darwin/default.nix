@@ -1,4 +1,4 @@
-{ lib, username, ... }:
+{ lib, config, ... }:
 {
   imports = [
     ../shared # Pull in all base options
@@ -15,13 +15,13 @@
       sharedModules = [
         { targets.darwin.linkApps.enable = false; }
       ];
-      users.${username}.home.homeDirectory = lib.mkForce "/Users/${username}";
+      users.${config.nots.username}.home.homeDirectory = lib.mkForce "/Users/${config.nots.username}";
     };
 
     # Configure userspace
-    users.users.${username} = {
-      name = username;
-      home = "/Users/${username}";
+    users.users.${config.nots.username} = {
+      name = config.nots.username;
+      home = "/Users/${config.nots.username}";
       isHidden = false;
     };
   };

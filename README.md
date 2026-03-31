@@ -4,7 +4,7 @@ A modular, "semi-dendritic" Nix configuration designed for simplicity, extensibi
 
 ## Usage
 
-Instead of hunting through nested folders to enable a tool, everything is controlled via a central `features` block. It’s designed to be write-once, toggle-anywhere.
+Instead of hunting through nested folders to enable a tool, everything is controlled via a central `nots.features` block. It’s designed to be write-once, toggle-anywhere.
 
 - Every app (Kitty, Zsh, Tmux) is its own self-contained module.
 - You can enable entire suites of tools or specific configs with simple booleans or options you define.
@@ -21,7 +21,7 @@ To define a new machine, simply import the relevant platform module and flip the
   ];
 
   # Choose your features
-  features = {
+  nots.features = {
     # System & GUI Settings
     getStdCliPkgs = true;
     getStdGuiPkgs = true;
@@ -41,6 +41,50 @@ To define a new machine, simply import the relevant platform module and flip the
   };
 }
 ```
+
+## Reuse in Other Repos
+
+This flake exports reusable modules so other repos can consume your dotfiles like a feature library.
+
+```nix
+# consumer flake.nix
+{
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    ooj-dots.url = "github:YOUR_USER/dots";
+  };
+
+  outputs = { nixpkgs, ooj-dots, ... }: {
+    nixosConfigurations.my-host = nixpkgs.lib.nixosSystem {
+      system = "x86_64-linux";
+      modules = [
+        ooj-dots.nixosModules.nots
+        ({ pkgs, ... }: {
+          nots.username = "myuser";
+          nots.features = {
+            getStdCliPkgs = true;
+            vim.enable = true;
+            tmux.enable = true;
+            zsh.enable = true;
+          };
+        })
+      ];
+      specialArgs = {
+        inherit (ooj-dots.inputs) nix-vscode-extensions;
+      };
+    };
+  };
+}
+```
+
+Exported module entry points:
+
+- `nixosModules.nots`
+- `darwinModules.nots`
+- `nixosModules.shared`
+- `darwinModules.shared`
+
+Compatibility note: existing `features.*` assignments still work via an internal alias, but `nots.features.*` is now the preferred API.
 
 ## Installation
 
